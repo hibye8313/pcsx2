@@ -46,6 +46,7 @@ static HRESULT s_hr = E_FAIL;
 #include "Window/GSWndEGL.h"
 
 extern bool RunLinuxDialog();
+extern bool RunwxDialog();
 
 #endif
 
@@ -796,12 +797,17 @@ EXPORT_C GSconfigure()
 
 #else
 
-		if (RunLinuxDialog()) {
+		/*if (RunLinuxDialog()) {
+			theApp.ReloadConfig();
+			// Force a reload of the gs state
+			theApp.SetCurrentRendererType(GSRendererType::Undefined);
+		}*/
+
+		if (RunwxDialog()) {
 			theApp.ReloadConfig();
 			// Force a reload of the gs state
 			theApp.SetCurrentRendererType(GSRendererType::Undefined);
 		}
-
 #endif
 
 	} catch (GSDXRecoverableError)

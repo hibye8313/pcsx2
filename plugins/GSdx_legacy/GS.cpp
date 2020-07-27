@@ -817,7 +817,13 @@ EXPORT_C GSconfigure()
 
 #else
 
-		if (RunLinuxDialog()) {
+		/*if (RunLinuxDialog()) {
+			theApp.ReloadConfig();
+			// Force a reload of the gs state
+			s_renderer = GSRendererType::Undefined;
+		}*/
+
+		if (RunwxDialog()) {
 			theApp.ReloadConfig();
 			// Force a reload of the gs state
 			s_renderer = GSRendererType::Undefined;
