@@ -1116,7 +1116,7 @@ EXPORT_C GSReplay(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow)
 				}
 				break;
 			case 1:
-				GSvsync(p.param);
+				GSvsync(s_gs->m_regs->CSR.rFIELD);
 				break;
 			case 2:
 				if(buff.size() < p.size) buff.resize(p.size);
@@ -1509,7 +1509,7 @@ EXPORT_C GSReplay(char* lpszCmdLine, int renderer)
 
 				case 1:
 
-					GSvsync(p->param);
+					GSvsync(s_gs->m_regs->CSR.rFIELD);
 					frame_number++;
 
 					break;
