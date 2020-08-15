@@ -142,7 +142,7 @@ private:
 
 	template <bool linear> void RoundSpriteOffset();
 
-protected:
+public:
 	GSTextureCache* m_tc;
 	GSVector4i m_r;
 	GSTextureCache::Source* m_src;

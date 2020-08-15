@@ -114,6 +114,11 @@ void GSRendererOGL::SetupIA(const float& sx, const float& sy)
 			__assume(0);
 	}
 
+	for (int i = 0; i < m_index.tail; i++) {
+		GSVertex& v = m_vertex.buff[m_index.buff[i]];
+		MY_PRINTF("x = %f, y = %f, u = %f, v = %f\n", FIX_X(v.XYZ.X), FIX_Y(v.XYZ.Y), FIX_UV(v.U), FIX_UV(v.V));
+	}
+
 	dev->IASetVertexBuffer(m_vertex.buff, m_vertex.next);
 	dev->IASetIndexBuffer(m_index.buff, m_index.tail);
 	dev->IASetPrimitiveTopology(t);
@@ -1445,6 +1450,23 @@ void GSRendererOGL::DrawPrims(GSTexture* rt, GSTexture* ds, GSTextureCache::Sour
 
 		dev->Recycle(hdr_rt);
 	}
+
+	//******************************
+	MY_PRINTF("FRAME.FBP = %x\n", m_context->FRAME.FBP);
+	if (image_count == 15) {
+		int i1 = GLState::ps_ss;
+		int i2 = ((GSDeviceOGL*)m_dev)->m_convert.ln;
+		int i3 = ((GSDeviceOGL*)m_dev)->m_convert.pt;
+		int i = 1 + 1;
+	}
+	/*if (rt) {
+		SaveMainScreenTexture(rt);
+		if (tex && tex->m_texture)
+			SaveTextureTexture(tex->m_texture);
+		NextImage();
+	}*/
+	//Sleep(1000);
+	//******************************
 }
 
 bool GSRendererOGL::IsDummyTexture() const

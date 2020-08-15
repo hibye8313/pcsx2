@@ -23,6 +23,7 @@
 #include "GSState.h"
 #include "GSdx.h"
 #include "GSUtil.h"
+#include "MyDebug.h"
 
 //#define Offset_ST  // Fixes Persona3 mini map alignment which is off even in software rendering
 
@@ -844,6 +845,7 @@ void GSState::GIFRegHandlerST(const GIFReg* RESTRICT r)
 void GSState::GIFRegHandlerUV(const GIFReg* RESTRICT r)
 {
 	m_v.UV = r->UV.u32[0] & 0x3fff3fff;
+	MY_PRINTF("u = %f, v = %f\n", FIX_UV(m_v.U), FIX_UV(m_v.V));
 }
 
 void GSState::GIFRegHandlerUV_Hack(const GIFReg* RESTRICT r)
@@ -884,6 +886,8 @@ void GSState::GIFRegHandlerXYZ2(const GIFReg* RESTRICT r)
 	// m_v.XYZ = (GSVector4i)r->XYZ;
 
 	m_v.m[1] = GSVector4i::load(&r->XYZ, &m_v.UV);
+
+	MY_PRINTF("x = %f, y = %f\n", FIX_X(m_v.XYZ.X), FIX_Y(m_v.XYZ.Y));
 
 	VertexKick<prim, auto_flush>(adc);
 }
@@ -2680,16 +2684,17 @@ __forceinline void GSState::VertexKick(uint32 skip)
 
 	size_t n = 0;
 
+	//TODO: MOVE THESE PRINTS TO A BETTER PLACE!
 	switch(prim)
 	{
-	case GS_POINTLIST: n = 1; break;
-	case GS_LINELIST: n = 2; break;
-	case GS_LINESTRIP: n = 2; break;
-	case GS_TRIANGLELIST: n = 3; break;
-	case GS_TRIANGLESTRIP: n = 3; break;
-	case GS_TRIANGLEFAN: n = 3; break;
-	case GS_SPRITE: n = 2; break;
-	case GS_INVALID: n = 1; break;
+	case GS_POINTLIST: n = 1; MY_PRINTF("GS_POINTLIST\n"); break;
+	case GS_LINELIST: n = 2; MY_PRINTF("GS_LINELIST\n"); break;
+	case GS_LINESTRIP: n = 2; MY_PRINTF("GS_LINESTRIP\n"); break;
+	case GS_TRIANGLELIST: n = 3; MY_PRINTF("GS_TRIANGLELIST\n"); break;
+	case GS_TRIANGLESTRIP: n = 3; MY_PRINTF("GS_TRIANGLESTRIP\n"); break;
+	case GS_TRIANGLEFAN: n = 3; MY_PRINTF("GS_TRIANGLEFAN\n"); break;
+	case GS_SPRITE: n = 2; MY_PRINTF("GS_SPRITE\n"); break;
+	case GS_INVALID: n = 1; MY_PRINTF("GS_INVALID\n"); break;
 	}
 
 	size_t m = tail - head;
@@ -2883,7 +2888,8 @@ __forceinline void GSState::VertexKick(uint32 skip)
 		__assume(0);
 	}
 
-	if (auto_flush && PRIM->TME && (m_context->FRAME.Block() == m_context->TEX0.TBP0))
+	//**************************ME
+	//if (auto_flush && PRIM->TME && (m_context->FRAME.Block() == m_context->TEX0.TBP0))
 		FlushPrim();
 }
 

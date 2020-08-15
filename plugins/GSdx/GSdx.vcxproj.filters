@@ -479,6 +479,9 @@
     <ClInclude Include="Renderers\Common\GSFastList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="GSdx.def" />
