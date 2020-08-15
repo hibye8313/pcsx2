@@ -75,7 +75,7 @@ bool GSDumpBase::VSync(int field, bool last, const GSPrivRegSet* regs)
 	AppendRawData(regs, sizeof(*regs));
 
 	AppendRawData(1);
-	AppendRawData(static_cast<uint8>(field));
+	AppendRawData(static_cast<uint8>(field)); // *** OK FIGURE OUT IF WHAT YOU DID FIXED THE ISSUE!
 
 	if (last)
 		m_extra_frames--;

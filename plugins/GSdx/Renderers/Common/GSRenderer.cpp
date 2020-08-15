@@ -469,7 +469,7 @@ void GSRenderer::VSync(int field)
 	}
 	else if(m_dump)
 	{
-		if(m_dump->VSync(field, !m_control_key, m_regs))
+		if(m_dump->VSync(field ? 1 : 0, !m_control_key, m_regs))
 			m_dump.reset();
 	}
 
