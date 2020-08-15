@@ -1,0 +1,251 @@
+1: GSState::GIFRegHandlerXYZ2: x = 0.000000, y = 0.000000
+1: GSState::VertexKick: GS_SPRITE
+1: GSState::GIFRegHandlerXYZ2: x = 640.000000, y = 224.000000
+1: GSState::VertexKick: GS_SPRITE
+2: GSRendererOGL::SetupIA: x = 0.000000, y = 0.000000, u = 256.500000, v = 208.500000
+2: GSRendererOGL::SetupIA: x = 640.000000, y = 0.000000, u = 256.500000, v = 208.500000
+2: GSRendererOGL::SetupIA: x = 0.000000, y = 224.000000, u = 256.500000, v = 208.500000
+2: GSRendererOGL::SetupIA: x = 640.000000, y = 0.000000, u = 256.500000, v = 208.500000
+2: GSRendererOGL::SetupIA: x = 0.000000, y = 224.000000, u = 256.500000, v = 208.500000
+2: GSRendererOGL::SetupIA: x = 640.000000, y = 224.000000, u = 256.500000, v = 208.500000
+2: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+2: GSState::GIFRegHandlerUV: u = 0.500000, v = 0.500000
+2: GSState::GIFRegHandlerXYZ2: x = 268435440.000000, y = 268435456.000000
+2: GSState::VertexKick: GS_SPRITE
+2: GSState::GIFRegHandlerUV: u = 512.500000, v = 256.500000
+2: GSState::GIFRegHandlerXYZ2: x = 528.000000, y = 260.000000
+2: GSState::VertexKick: GS_SPRITE
+3: GSRendererOGL::SetupIA: x = 268435440.000000, y = 268435456.000000, u = 0.500000, v = 0.500000
+3: GSRendererOGL::SetupIA: x = 528.000000, y = 268435456.000000, u = 512.500000, v = 0.500000
+3: GSRendererOGL::SetupIA: x = 268435440.000000, y = 260.000000, u = 0.500000, v = 256.500000
+3: GSRendererOGL::SetupIA: x = 528.000000, y = 268435456.000000, u = 512.500000, v = 0.500000
+3: GSRendererOGL::SetupIA: x = 268435440.000000, y = 260.000000, u = 0.500000, v = 256.500000
+3: GSRendererOGL::SetupIA: x = 528.000000, y = 260.000000, u = 512.500000, v = 256.500000
+3: GSRendererOGL::DrawPrims: FRAME.FBP = 112
+3: GSState::GIFRegHandlerUV: u = 0.500000, v = 0.500000
+3: GSState::GIFRegHandlerXYZ2: x = 649.187500, y = 219.500000
+3: GSState::VertexKick: GS_TRIANGLEFAN
+3: GSState::GIFRegHandlerUV: u = 512.500000, v = 0.500000
+3: GSState::GIFRegHandlerXYZ2: x = 71.875000, y = 324.562500
+3: GSState::VertexKick: GS_TRIANGLEFAN
+3: GSState::GIFRegHandlerUV: u = 512.500000, v = 256.500000
+3: GSState::GIFRegHandlerXYZ2: x = 268435312.000000, y = 35.937500
+3: GSState::VertexKick: GS_TRIANGLEFAN
+4: GSRendererOGL::SetupIA: x = 649.187500, y = 219.500000, u = 0.500000, v = 0.500000
+4: GSRendererOGL::SetupIA: x = 71.875000, y = 324.562500, u = 512.500000, v = 0.500000
+4: GSRendererOGL::SetupIA: x = 268435312.000000, y = 35.937500, u = 512.500000, v = 256.500000
+4: GSRendererOGL::DrawPrims: FRAME.FBP = 112
+4: GSState::GIFRegHandlerUV: u = 0.500000, v = 256.500000
+4: GSState::GIFRegHandlerXYZ2: x = 439.062500, y = 268435392.000000
+4: GSState::VertexKick: GS_TRIANGLEFAN
+5: GSRendererOGL::SetupIA: x = 649.187500, y = 219.500000, u = 0.500000, v = 0.500000
+5: GSRendererOGL::SetupIA: x = 268435312.000000, y = 35.937500, u = 512.500000, v = 256.500000
+5: GSRendererOGL::SetupIA: x = 439.062500, y = 268435392.000000, u = 0.500000, v = 256.500000
+5: GSRendererOGL::DrawPrims: FRAME.FBP = 112
+5: GSState::GIFRegHandlerUV: u = 0.500000, v = 0.500000
+5: GSState::GIFRegHandlerXYZ2: x = 439.062500, y = 324.625000
+5: GSState::VertexKick: GS_TRIANGLEFAN
+5: GSState::GIFRegHandlerUV: u = 512.500000, v = 0.500000
+5: GSState::GIFRegHandlerXYZ2: x = 268435312.000000, y = 219.500000
+5: GSState::VertexKick: GS_TRIANGLEFAN
+5: GSState::GIFRegHandlerUV: u = 512.500000, v = 256.500000
+5: GSState::GIFRegHandlerXYZ2: x = 71.875000, y = 268435392.000000
+5: GSState::VertexKick: GS_TRIANGLEFAN
+6: GSRendererOGL::SetupIA: x = 439.062500, y = 324.625000, u = 0.500000, v = 0.500000
+6: GSRendererOGL::SetupIA: x = 268435312.000000, y = 219.500000, u = 512.500000, v = 0.500000
+6: GSRendererOGL::SetupIA: x = 71.875000, y = 268435392.000000, u = 512.500000, v = 256.500000
+6: GSRendererOGL::DrawPrims: FRAME.FBP = 112
+6: GSState::GIFRegHandlerUV: u = 0.500000, v = 256.500000
+6: GSState::GIFRegHandlerXYZ2: x = 649.250000, y = 35.937500
+6: GSState::VertexKick: GS_TRIANGLEFAN
+7: GSRendererOGL::SetupIA: x = 439.062500, y = 324.625000, u = 0.500000, v = 0.500000
+7: GSRendererOGL::SetupIA: x = 71.875000, y = 268435392.000000, u = 512.500000, v = 256.500000
+7: GSRendererOGL::SetupIA: x = 649.250000, y = 35.937500, u = 0.500000, v = 256.500000
+7: GSRendererOGL::DrawPrims: FRAME.FBP = 112
+7: GSState::GIFRegHandlerUV: u = 0.500000, v = 0.500000
+7: GSState::GIFRegHandlerXYZ2: x = 0.000000, y = 0.000000
+7: GSState::VertexKick: GS_SPRITE
+7: GSState::GIFRegHandlerUV: u = 512.500000, v = 256.500000
+7: GSState::GIFRegHandlerXYZ2: x = 512.000000, y = 256.000000
+7: GSState::VertexKick: GS_SPRITE
+8: GSRendererOGL::SetupIA: x = 0.000000, y = 0.000000, u = 0.500000, v = 0.500000
+8: GSRendererOGL::SetupIA: x = 512.000000, y = 0.000000, u = 512.500000, v = 0.500000
+8: GSRendererOGL::SetupIA: x = 0.000000, y = 256.000000, u = 0.500000, v = 256.500000
+8: GSRendererOGL::SetupIA: x = 512.000000, y = 0.000000, u = 512.500000, v = 0.500000
+8: GSRendererOGL::SetupIA: x = 0.000000, y = 256.000000, u = 0.500000, v = 256.500000
+8: GSRendererOGL::SetupIA: x = 512.000000, y = 256.000000, u = 512.500000, v = 256.500000
+8: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+8: GSState::GIFRegHandlerXYZ2: x = 0.000000, y = 0.000000
+8: GSState::VertexKick: GS_SPRITE
+8: GSState::GIFRegHandlerXYZ2: x = 512.000000, y = 256.000000
+8: GSState::VertexKick: GS_SPRITE
+9: GSRendererOGL::SetupIA: x = 0.000000, y = 0.000000, u = 512.500000, v = 256.500000
+9: GSRendererOGL::SetupIA: x = 512.000000, y = 0.000000, u = 512.500000, v = 256.500000
+9: GSRendererOGL::SetupIA: x = 0.000000, y = 256.000000, u = 512.500000, v = 256.500000
+9: GSRendererOGL::SetupIA: x = 512.000000, y = 0.000000, u = 512.500000, v = 256.500000
+9: GSRendererOGL::SetupIA: x = 0.000000, y = 256.000000, u = 512.500000, v = 256.500000
+9: GSRendererOGL::SetupIA: x = 512.000000, y = 256.000000, u = 512.500000, v = 256.500000
+9: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+9: GSState::GIFRegHandlerXYZ2: x = 245.500000, y = 122.750000
+9: GSState::VertexKick: GS_SPRITE
+9: GSState::GIFRegHandlerXYZ2: x = 265.500000, y = 132.750000
+9: GSState::VertexKick: GS_SPRITE
+10: GSRendererOGL::SetupIA: x = 245.500000, y = 122.750000, u = 512.500000, v = 256.500000
+10: GSRendererOGL::SetupIA: x = 265.500000, y = 122.750000, u = 512.500000, v = 256.500000
+10: GSRendererOGL::SetupIA: x = 245.500000, y = 132.750000, u = 512.500000, v = 256.500000
+10: GSRendererOGL::SetupIA: x = 265.500000, y = 122.750000, u = 512.500000, v = 256.500000
+10: GSRendererOGL::SetupIA: x = 245.500000, y = 132.750000, u = 512.500000, v = 256.500000
+10: GSRendererOGL::SetupIA: x = 265.500000, y = 132.750000, u = 512.500000, v = 256.500000
+10: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+10: GSState::GIFRegHandlerXYZ2: x = 49.500000, y = 22.250000
+10: GSState::VertexKick: GS_SPRITE
+10: GSState::GIFRegHandlerXYZ2: x = 54.500000, y = 24.750000
+10: GSState::VertexKick: GS_SPRITE
+11: GSRendererOGL::SetupIA: x = 49.500000, y = 22.250000, u = 512.500000, v = 256.500000
+11: GSRendererOGL::SetupIA: x = 54.500000, y = 22.250000, u = 512.500000, v = 256.500000
+11: GSRendererOGL::SetupIA: x = 49.500000, y = 24.750000, u = 512.500000, v = 256.500000
+11: GSRendererOGL::SetupIA: x = 54.500000, y = 22.250000, u = 512.500000, v = 256.500000
+11: GSRendererOGL::SetupIA: x = 49.500000, y = 24.750000, u = 512.500000, v = 256.500000
+11: GSRendererOGL::SetupIA: x = 54.500000, y = 24.750000, u = 512.500000, v = 256.500000
+11: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+11: GSState::GIFRegHandlerXYZ2: x = 331.500000, y = 151.250000
+11: GSState::VertexKick: GS_SPRITE
+11: GSState::GIFRegHandlerXYZ2: x = 336.500000, y = 153.750000
+11: GSState::VertexKick: GS_SPRITE
+12: GSRendererOGL::SetupIA: x = 331.500000, y = 151.250000, u = 512.500000, v = 256.500000
+12: GSRendererOGL::SetupIA: x = 336.500000, y = 151.250000, u = 512.500000, v = 256.500000
+12: GSRendererOGL::SetupIA: x = 331.500000, y = 153.750000, u = 512.500000, v = 256.500000
+12: GSRendererOGL::SetupIA: x = 336.500000, y = 151.250000, u = 512.500000, v = 256.500000
+12: GSRendererOGL::SetupIA: x = 331.500000, y = 153.750000, u = 512.500000, v = 256.500000
+12: GSRendererOGL::SetupIA: x = 336.500000, y = 153.750000, u = 512.500000, v = 256.500000
+12: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+12: GSState::GIFRegHandlerXYZ2: x = 501.500000, y = 190.750000
+12: GSState::VertexKick: GS_SPRITE
+12: GSState::GIFRegHandlerXYZ2: x = 506.500000, y = 193.250000
+12: GSState::VertexKick: GS_SPRITE
+13: GSRendererOGL::SetupIA: x = 501.500000, y = 190.750000, u = 512.500000, v = 256.500000
+13: GSRendererOGL::SetupIA: x = 506.500000, y = 190.750000, u = 512.500000, v = 256.500000
+13: GSRendererOGL::SetupIA: x = 501.500000, y = 193.250000, u = 512.500000, v = 256.500000
+13: GSRendererOGL::SetupIA: x = 506.500000, y = 190.750000, u = 512.500000, v = 256.500000
+13: GSRendererOGL::SetupIA: x = 501.500000, y = 193.250000, u = 512.500000, v = 256.500000
+13: GSRendererOGL::SetupIA: x = 506.500000, y = 193.250000, u = 512.500000, v = 256.500000
+13: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+13: GSState::GIFRegHandlerXYZ2: x = 339.500000, y = 3.250000
+13: GSState::VertexKick: GS_SPRITE
+13: GSState::GIFRegHandlerXYZ2: x = 344.500000, y = 5.750000
+13: GSState::VertexKick: GS_SPRITE
+14: GSRendererOGL::SetupIA: x = 339.500000, y = 3.250000, u = 512.500000, v = 256.500000
+14: GSRendererOGL::SetupIA: x = 344.500000, y = 3.250000, u = 512.500000, v = 256.500000
+14: GSRendererOGL::SetupIA: x = 339.500000, y = 5.750000, u = 512.500000, v = 256.500000
+14: GSRendererOGL::SetupIA: x = 344.500000, y = 3.250000, u = 512.500000, v = 256.500000
+14: GSRendererOGL::SetupIA: x = 339.500000, y = 5.750000, u = 512.500000, v = 256.500000
+14: GSRendererOGL::SetupIA: x = 344.500000, y = 5.750000, u = 512.500000, v = 256.500000
+14: GSRendererOGL::DrawPrims: FRAME.FBP = d2
+14: GSState::GIFRegHandlerUV: u = 0.500000, v = 0.500000
+14: GSState::GIFRegHandlerXYZ2: x = 0.000000, y = 268435408.000000
+14: GSState::VertexKick: GS_SPRITE
+14: GSState::GIFRegHandlerUV: u = 512.500000, v = 256.500000
+14: GSState::GIFRegHandlerXYZ2: x = 640.000000, y = 272.000000
+14: GSState::VertexKick: GS_SPRITE
+15: GSRendererOGL::SetupIA: x = 0.000000, y = 268435408.000000, u = 0.500000, v = 0.500000
+15: GSRendererOGL::SetupIA: x = 640.000000, y = 268435408.000000, u = 512.500000, v = 0.500000
+15: GSRendererOGL::SetupIA: x = 0.000000, y = 272.000000, u = 0.500000, v = 256.500000
+15: GSRendererOGL::SetupIA: x = 640.000000, y = 268435408.000000, u = 512.500000, v = 0.500000
+15: GSRendererOGL::SetupIA: x = 0.000000, y = 272.000000, u = 0.500000, v = 256.500000
+15: GSRendererOGL::SetupIA: x = 640.000000, y = 272.000000, u = 512.500000, v = 256.500000
+15: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+15: GSState::GIFRegHandlerXYZ2: x = 0.000000, y = 0.000000
+15: GSState::VertexKick: GS_SPRITE
+15: GSState::GIFRegHandlerXYZ2: x = 640.000000, y = 320.000000
+15: GSState::VertexKick: GS_SPRITE
+16: GSRendererOGL::SetupIA: x = 0.000000, y = 0.000000, u = 512.500000, v = 256.500000
+16: GSRendererOGL::SetupIA: x = 640.000000, y = 0.000000, u = 512.500000, v = 256.500000
+16: GSRendererOGL::SetupIA: x = 0.000000, y = 320.000000, u = 512.500000, v = 256.500000
+16: GSRendererOGL::SetupIA: x = 640.000000, y = 0.000000, u = 512.500000, v = 256.500000
+16: GSRendererOGL::SetupIA: x = 0.000000, y = 320.000000, u = 512.500000, v = 256.500000
+16: GSRendererOGL::SetupIA: x = 640.000000, y = 320.000000, u = 512.500000, v = 256.500000
+16: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+16: GSState::GIFRegHandlerUV: u = 204.500000, v = 0.500000
+16: GSState::GIFRegHandlerXYZ2: x = 120.000000, y = 55.000000
+16: GSState::VertexKick: GS_SPRITE
+16: GSState::GIFRegHandlerUV: u = 216.500000, v = 16.500000
+16: GSState::GIFRegHandlerXYZ2: x = 144.000000, y = 71.000000
+16: GSState::VertexKick: GS_SPRITE
+17: GSRendererOGL::SetupIA: x = 120.000000, y = 55.000000, u = 204.500000, v = 0.500000
+17: GSRendererOGL::SetupIA: x = 144.000000, y = 55.000000, u = 216.437500, v = 0.500000
+17: GSRendererOGL::SetupIA: x = 120.000000, y = 71.000000, u = 204.500000, v = 16.500000
+17: GSRendererOGL::SetupIA: x = 144.000000, y = 55.000000, u = 216.437500, v = 0.500000
+17: GSRendererOGL::SetupIA: x = 120.000000, y = 71.000000, u = 204.500000, v = 16.500000
+17: GSRendererOGL::SetupIA: x = 144.000000, y = 71.000000, u = 216.437500, v = 16.500000
+17: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+17: GSState::GIFRegHandlerUV: u = 132.500000, v = 32.500000
+17: GSState::GIFRegHandlerXYZ2: x = 140.000000, y = 55.000000
+17: GSState::VertexKick: GS_SPRITE
+17: GSState::GIFRegHandlerUV: u = 144.500000, v = 48.500000
+17: GSState::GIFRegHandlerXYZ2: x = 164.000000, y = 71.000000
+17: GSState::VertexKick: GS_SPRITE
+18: GSRendererOGL::SetupIA: x = 140.000000, y = 55.000000, u = 132.500000, v = 32.500000
+18: GSRendererOGL::SetupIA: x = 164.000000, y = 55.000000, u = 144.437500, v = 32.500000
+18: GSRendererOGL::SetupIA: x = 140.000000, y = 71.000000, u = 132.500000, v = 48.500000
+18: GSRendererOGL::SetupIA: x = 164.000000, y = 55.000000, u = 144.437500, v = 32.500000
+18: GSRendererOGL::SetupIA: x = 140.000000, y = 71.000000, u = 132.500000, v = 48.500000
+18: GSRendererOGL::SetupIA: x = 164.000000, y = 71.000000, u = 144.437500, v = 48.500000
+18: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+18: GSState::GIFRegHandlerUV: u = 144.500000, v = 32.500000
+18: GSState::GIFRegHandlerXYZ2: x = 160.000000, y = 55.000000
+18: GSState::VertexKick: GS_SPRITE
+18: GSState::GIFRegHandlerUV: u = 156.500000, v = 48.500000
+18: GSState::GIFRegHandlerXYZ2: x = 184.000000, y = 71.000000
+18: GSState::VertexKick: GS_SPRITE
+19: GSRendererOGL::SetupIA: x = 160.000000, y = 55.000000, u = 144.500000, v = 32.500000
+19: GSRendererOGL::SetupIA: x = 184.000000, y = 55.000000, u = 156.437500, v = 32.500000
+19: GSRendererOGL::SetupIA: x = 160.000000, y = 71.000000, u = 144.500000, v = 48.500000
+19: GSRendererOGL::SetupIA: x = 184.000000, y = 55.000000, u = 156.437500, v = 32.500000
+19: GSRendererOGL::SetupIA: x = 160.000000, y = 71.000000, u = 144.500000, v = 48.500000
+19: GSRendererOGL::SetupIA: x = 184.000000, y = 71.000000, u = 156.437500, v = 48.500000
+19: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+19: GSState::GIFRegHandlerUV: u = 216.500000, v = 0.500000
+19: GSState::GIFRegHandlerXYZ2: x = 238.000000, y = 55.000000
+19: GSState::VertexKick: GS_SPRITE
+19: GSState::GIFRegHandlerUV: u = 228.500000, v = 16.500000
+19: GSState::GIFRegHandlerXYZ2: x = 262.000000, y = 71.000000
+19: GSState::VertexKick: GS_SPRITE
+20: GSRendererOGL::SetupIA: x = 238.000000, y = 55.000000, u = 216.500000, v = 0.500000
+20: GSRendererOGL::SetupIA: x = 262.000000, y = 55.000000, u = 228.437500, v = 0.500000
+20: GSRendererOGL::SetupIA: x = 238.000000, y = 71.000000, u = 216.500000, v = 16.500000
+20: GSRendererOGL::SetupIA: x = 262.000000, y = 55.000000, u = 228.437500, v = 0.500000
+20: GSRendererOGL::SetupIA: x = 238.000000, y = 71.000000, u = 216.500000, v = 16.500000
+20: GSRendererOGL::SetupIA: x = 262.000000, y = 71.000000, u = 228.437500, v = 16.500000
+20: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+20: GSState::GIFRegHandlerUV: u = 204.500000, v = 0.500000
+20: GSState::GIFRegHandlerXYZ2: x = 258.000000, y = 55.000000
+20: GSState::VertexKick: GS_SPRITE
+20: GSState::GIFRegHandlerUV: u = 216.500000, v = 16.500000
+20: GSState::GIFRegHandlerXYZ2: x = 282.000000, y = 71.000000
+20: GSState::VertexKick: GS_SPRITE
+21: GSRendererOGL::SetupIA: x = 258.000000, y = 55.000000, u = 204.500000, v = 0.500000
+21: GSRendererOGL::SetupIA: x = 282.000000, y = 55.000000, u = 216.437500, v = 0.500000
+21: GSRendererOGL::SetupIA: x = 258.000000, y = 71.000000, u = 204.500000, v = 16.500000
+21: GSRendererOGL::SetupIA: x = 282.000000, y = 55.000000, u = 216.437500, v = 0.500000
+21: GSRendererOGL::SetupIA: x = 258.000000, y = 71.000000, u = 204.500000, v = 16.500000
+21: GSRendererOGL::SetupIA: x = 282.000000, y = 71.000000, u = 216.437500, v = 16.500000
+21: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+21: GSState::GIFRegHandlerUV: u = 228.500000, v = 0.500000
+21: GSState::GIFRegHandlerXYZ2: x = 278.000000, y = 55.000000
+21: GSState::VertexKick: GS_SPRITE
+21: GSState::GIFRegHandlerUV: u = 240.500000, v = 16.500000
+21: GSState::GIFRegHandlerXYZ2: x = 302.000000, y = 71.000000
+21: GSState::VertexKick: GS_SPRITE
+22: GSRendererOGL::SetupIA: x = 278.000000, y = 55.000000, u = 228.500000, v = 0.500000
+22: GSRendererOGL::SetupIA: x = 302.000000, y = 55.000000, u = 240.437500, v = 0.500000
+22: GSRendererOGL::SetupIA: x = 278.000000, y = 71.000000, u = 228.500000, v = 16.500000
+22: GSRendererOGL::SetupIA: x = 302.000000, y = 55.000000, u = 240.437500, v = 0.500000
+22: GSRendererOGL::SetupIA: x = 278.000000, y = 71.000000, u = 228.500000, v = 16.500000
+22: GSRendererOGL::SetupIA: x = 302.000000, y = 71.000000, u = 240.437500, v = 16.500000
+22: GSRendererOGL::DrawPrims: FRAME.FBP = 46
+22: GSState::GIFRegHandlerUV: u = 48.500000, v = 16.500000
+22: GSState::GIFRegHandlerXYZ2: x = 298.000000, y = 55.000000
+22: GSState::VertexKick: GS_SPRITE
+22: GSState::GIFRegHandlerUV: u = 60.500000, v = 32.500000
+22: GSState::GIFRegHandlerXYZ2: x = 322.000000, y = 71.000000
+22: GSState::VertexKick: GS_SPRITE

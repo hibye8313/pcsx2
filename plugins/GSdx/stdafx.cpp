@@ -48,8 +48,8 @@ std::string format(const char* fmt, ...)
 
 // Helper path to dump texture
 #ifdef _WIN32
-const std::string root_sw("c:\\temp1\\_");
-const std::string root_hw("c:\\temp2\\_");
+const std::string root_sw("C:\\Users\\tchan\\Desktop\\GS Dump\\Images\\");
+const std::string root_hw("C:\\Users\\tchan\\Desktop\\GS Dump\\Images2\\");
 #else
 #ifdef _M_AMD64
 const std::string root_sw("/tmp/GS_SW_dump64/");

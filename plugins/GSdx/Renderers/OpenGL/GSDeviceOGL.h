@@ -422,7 +422,7 @@ public:
 	static int m_shader_inst;
 	static int m_shader_reg;
 
-private:
+public:
 	int m_force_texture_clear;
 	int m_mipmap;
 	TriFiltering m_filter;

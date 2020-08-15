@@ -24,6 +24,7 @@
 #include "GSTextureOGL.h"
 #include "GLState.h"
 #include "GSPng.h"
+#include "MyDebug.h"
 
 #ifdef ENABLE_OGL_DEBUG_MEM_BW
 extern uint64 g_real_texture_upload_byte;
@@ -553,13 +554,118 @@ void GSTextureOGL::CommitPages(const GSVector2i& region, bool commit)
 	GLState::available_vram -= m_mem_usage;
 }
 
+bool GSTextureOGL::SaveBits(const std::string& out_file_name) {
+	// Collect the texture data
+	uint32 pitch = 4 * m_committed_size.x;
+	uint32 buf_size = pitch * m_committed_size.y * 2;// Note *2 for security (depth/stencil)
+	std::unique_ptr<uint8[]> image(new uint8[buf_size]);
+
+	GSPng::Format fmt = GSPng::RGB_PNG;
+
+	if (IsBackbuffer()) {
+		glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
+	} else if(IsDss()) {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo_read);
+
+		glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_texture_id, 0);
+		glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, image.get());
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+		fmt = GSPng::RGB_A_PNG;
+	} else if(m_format == GL_R32I) {
+		// Note: 4.5 function used for accurate DATE
+		// barely used outside of dev and not sparse anyway
+		glGetTextureImage(m_texture_id, 0, GL_RED_INTEGER, GL_INT, buf_size, image.get());
+
+		fmt = GSPng::R32I_PNG;
+	} else {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo_read);
+
+		glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture_id, 0);
+
+		if (m_format == GL_RGBA8) {
+			glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
+		}
+		else if (m_format == GL_R16UI)
+		{
+			glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RED_INTEGER, GL_UNSIGNED_SHORT, image.get());
+			fmt = GSPng::R16I_PNG;
+		}
+		else if (m_format == GL_R8)
+		{
+			fmt = GSPng::R8I_PNG;
+			glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RED, GL_UNSIGNED_BYTE, image.get());
+		}
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	}
+
+	assert(fmt == GSPng::RGB_PNG);
+	WriteImageBits(out_file_name, m_committed_size.x, m_committed_size.y, image.get());
+	return true;
+	//return GSPng::Save(fmt, fn, image.get(), m_committed_size.x, m_committed_size.y, pitch, compression);
+}
+bool GSTextureOGL::SaveBitmapRGB32(const std::string& out_file_name) {
+	// Collect the texture data
+	uint32 pitch = 4 * m_committed_size.x;
+	uint32 buf_size = pitch * m_committed_size.y * 2;// Note *2 for security (depth/stencil)
+	std::unique_ptr<uint8[]> image(new uint8[buf_size]);
+
+	GSPng::Format fmt = GSPng::RGB_PNG;
+
+	if (IsBackbuffer()) {
+		glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
+	} else if(IsDss()) {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo_read);
+
+		glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_texture_id, 0);
+		glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, image.get());
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+		fmt = GSPng::RGB_A_PNG;
+	} else if(m_format == GL_R32I) {
+		// Note: 4.5 function used for accurate DATE
+		// barely used outside of dev and not sparse anyway
+		glGetTextureImage(m_texture_id, 0, GL_RED_INTEGER, GL_INT, buf_size, image.get());
+
+		fmt = GSPng::R32I_PNG;
+	} else {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo_read);
+
+		glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture_id, 0);
+
+		if (m_format == GL_RGBA8) {
+			glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RGBA, GL_UNSIGNED_BYTE, image.get());
+		}
+		else if (m_format == GL_R16UI)
+		{
+			glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RED_INTEGER, GL_UNSIGNED_SHORT, image.get());
+			fmt = GSPng::R16I_PNG;
+		}
+		else if (m_format == GL_R8)
+		{
+			fmt = GSPng::R8I_PNG;
+			glReadPixels(0, 0, m_committed_size.x, m_committed_size.y, GL_RED, GL_UNSIGNED_BYTE, image.get());
+		}
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	}
+
+	assert(fmt == GSPng::RGB_PNG);
+	WriteImageBitsToBitmapRGB32(m_committed_size.x, m_committed_size.y, image.get(), out_file_name);
+	return true;
+}
+
+
 bool GSTextureOGL::Save(const std::string& fn)
 {
 	// Collect the texture data
 	uint32 pitch = 4 * m_committed_size.x;
 	uint32 buf_size = pitch * m_committed_size.y * 2;// Note *2 for security (depth/stencil)
 	std::unique_ptr<uint8[]> image(new uint8[buf_size]);
-#ifdef ENABLE_OGL_DEBUG
+#ifdef BOOBY //ENABLE_OGL_DEBUG
 	GSPng::Format fmt = GSPng::RGB_A_PNG;
 #else
 	GSPng::Format fmt = GSPng::RGB_PNG;
@@ -602,6 +708,13 @@ bool GSTextureOGL::Save(const std::string& fn)
 		}
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	}
+
+	extern int image_count;
+	if (image_count == 10) {
+		struct S { uint8 data[1000]; };
+		S* p = (S*)image.get();
+		int i = 1 + 1;
 	}
 
 	int compression = theApp.GetConfigI("png_compression_level");

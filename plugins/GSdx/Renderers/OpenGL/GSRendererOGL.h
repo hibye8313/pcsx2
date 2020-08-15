@@ -24,6 +24,7 @@
 #include "Renderers/HW/GSRendererHW.h"
 #include "GSTextureCacheOGL.h"
 #include "Renderers/HW/GSVertexHW.h"
+#include "MyDebug.h"
 
 class GSRendererOGL final : public GSRendererHW
 {

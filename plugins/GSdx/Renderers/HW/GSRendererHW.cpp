@@ -1080,6 +1080,55 @@ void GSRendererHW::RoundSpriteOffset()
 	}
 }
 
+// Based loosely on the GSRendererHW::RoundSpriteOffset function, but simplified
+// This is meant to fix issues with sprite rendering on the game Cho Aniki: Seinaru Protein Densetsu
+// The basic issue is that the game renders sprites whose right-most pixels get texture coordinates
+// that are exactly on a texel boundary. It seems that graphics backends (OpenGL and DX11) round boundary
+// texture coordinates to the texel on the right or bottom which causes the sprite to pickup texels its not
+// supposed to. The behavior of boundary texture coordinates on the actual GS is currently unknown to me.
+// This has currently not been tested on other games so it will be considered a "hack".
+void GSRendererHW::RoundDownSprites() {
+	size_t count = m_vertex.next;
+	// Go through each sprite in buffer; every 2 verts is a sprite.
+	for(size_t i = 0; i < count; i += 2) {
+		GSVertex& vert0 = m_vertex.buff[i];
+		GSVertex& vert1 = m_vertex.buff[i + 1];
+
+	    // Use int64 here to prevent precision issues in integer arithmetic
+		{
+			const int64 X0 = vert0.XYZ.X;
+			const int64 X1 = vert1.XYZ.X;
+			const int64 X  = (X1 - 1) & ~0xF; // X value of the right-most rasterized pixels.
+										      // Subtract 1 to exclude X1 if it is on a pixel center (as per GS rasterization rules)
+
+			if ((X1 > X0) && (X >= X0)) { // Need this check in case the sprite covers no pixels
+				const int64 U0 = vert0.U;
+				const int64 U1 = vert1.U;
+				const int64 U = ((X1 - X) * U0 + (X - X0) * U1) / (X1 - X0); // U value of the right-most rasterized pixel.
+				if ((U & 0xF) == 0) { // Fractional part (lower 4 bits) == 0 means we lie on a texel boundary.
+					vert1.U--;     // Subtract 1/16 texel so that we do not select the texel to the right
+				}
+			}
+		}
+
+		{
+			const int64 Y0 = vert0.XYZ.Y;
+			const int64 Y1 = vert1.XYZ.Y;
+			const int64 Y  = (Y1 - 1) & ~0xF; // Y value of the bottom-most rasterized pixels.
+										      // Subtract 1 to exclude Y1 if it is on a pixel center (as per GS rasterization rules)
+			
+			if ((Y1 > Y0) && (Y >= Y0)) { // Need this check in case the sprite covers no pixels
+				int64 V0 = vert0.V;
+				int64 V1 = vert1.V;
+				int64 V = ((Y1 - Y) * V0 + (Y - Y0) * V1) / (Y1 - Y0); // V value of the bottom-most rasterized pixel.
+				if ((V & 0xF) == 0) { // Fractional part (lower 4 bits) == 0 means we lie on a texel boundary.
+					vert1.V--; // Subtract 1/16 texel so that we do not select the texel to the bottom
+				}
+			}
+		}
+	}
+}
+
 void GSRendererHW::Draw()
 {
 	if(m_dev->IsLost() || IsBadFrame()) {
@@ -1087,7 +1136,9 @@ void GSRendererHW::Draw()
 		return;
 	}
 	GL_PUSH("HW Draw %d", s_n);
-
+	if (s_n == 9) {
+		int i = 1 + 1;
+	}
 	GSDrawingEnvironment& env = m_env;
 	GSDrawingContext* context = m_context;
 	const GSLocalMemory::psm_t& tex_psm = GSLocalMemory::m_psm[m_context->TEX0.PSM];
@@ -1455,6 +1506,9 @@ void GSRendererHW::Draw()
 		}
 	}
 
+	//if (draw_sprite_tex && PRIM->FST)  { // Drawing a textured sprite with UV coordinates
+	//	RoundDownSprites();
+	//}
 	//
 
 	DrawPrims(rt_tex, ds_tex, m_src);

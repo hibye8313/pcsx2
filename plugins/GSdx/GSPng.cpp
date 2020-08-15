@@ -23,6 +23,8 @@
 #include <zlib.h>
 #include <png.h>
 
+extern int image_count;
+
 struct {
     int type;
     int bytes_per_pixel_in;
