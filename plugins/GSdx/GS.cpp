@@ -53,7 +53,7 @@ extern bool RunLinuxDialog();
 #define PS2E_X86 0x01   // 32 bit
 #define PS2E_X86_64 0x02   // 64 bit
 
-static GSRenderer* s_gs = NULL;
+GSRenderer* s_gs = NULL;
 static void (*s_irq)() = NULL;
 static uint8* s_basemem = NULL;
 static int s_vsync = 0;
@@ -1002,7 +1002,7 @@ public:
 //   Second parameter is the gs file to load and run.
 
 EXPORT_C GSReplay(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow)
-{
+{	
 	GSRendererType renderer = GSRendererType::Undefined;
 
 	{
@@ -1349,9 +1349,18 @@ inline unsigned long timeGetTime()
 	return (unsigned long)(t.tv_sec*1000 + t.tv_nsec/1000000);
 }
 
+FILE* my_log_file;
+
 // Note
 EXPORT_C GSReplay(char* lpszCmdLine, int renderer)
 {
+	my_log_file = fopen("log.txt", "w");
+
+	if (my_log_file == NULL) {
+		fprintf(stderr, "Not able to open the log file.\n");
+		return;
+	}
+	
 	GLLoader::in_replayer = true;
 	// Required by multithread driver
 	XInitThreads();
@@ -1509,7 +1518,8 @@ EXPORT_C GSReplay(char* lpszCmdLine, int renderer)
 
 				case 1:
 
-					GSvsync(p->param);
+					//GSvsync(p->param);
+					GSvsync(s_gs->m_regs->CSR.rFIELD);
 					frame_number++;
 
 					break;

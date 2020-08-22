@@ -434,3 +434,5 @@ struct GLAutoPop {
 // Helper path to dump texture
 extern const std::string root_sw;
 extern const std::string root_hw;
+
+#include "/home/hibye8313/notes/pcsx2/my_gsdx_stdafx.h"

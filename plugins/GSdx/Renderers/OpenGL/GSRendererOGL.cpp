@@ -211,6 +211,8 @@ void GSRendererOGL::EmulateTextureShuffleAndFbmask()
 
 		ConvertSpriteTextureShuffle(write_ba, read_ba);
 
+		MY_LOGF("write_ba = %d, read_ba = %d\n", write_ba, read_ba);
+
 		// If date is enabled you need to test the green channel instead of the
 		// alpha channel. Only enable this code in DATE mode to reduce the number
 		// of shader.

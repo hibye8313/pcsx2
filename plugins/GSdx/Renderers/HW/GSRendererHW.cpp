@@ -1087,7 +1087,7 @@ void GSRendererHW::Draw()
 		return;
 	}
 	GL_PUSH("HW Draw %d", s_n);
-
+	
 	GSDrawingEnvironment& env = m_env;
 	GSDrawingContext* context = m_context;
 	const GSLocalMemory::psm_t& tex_psm = GSLocalMemory::m_psm[m_context->TEX0.PSM];
@@ -1153,6 +1153,8 @@ void GSRendererHW::Draw()
 		m_channel_shuffle = false;
 	}
 
+	MY_LOGF("m_channel_shuffle = %d\n", m_channel_shuffle);
+	
 	GIFRegTEX0 TEX0;
 
 	TEX0.TBP0 = context->FRAME.Block();
@@ -1256,7 +1258,7 @@ void GSRendererHW::Draw()
 		GSVector4i r;
 
 		GetTextureMinMax(r, TEX0, MIP_CLAMP, m_vt.IsLinear());
-
+		
 		m_src = tex_psm.depth ? m_tc->LookupDepthSource(TEX0, env.TEXA, r) : m_tc->LookupSource(TEX0, env.TEXA, r);
 
 		// Round 2
@@ -1293,6 +1295,8 @@ void GSRendererHW::Draw()
 		// Both input and output are 16 bits and texture was initially 32 bits!
 		m_texture_shuffle = (GSLocalMemory::m_psm[context->FRAME.PSM].bpp == 16) && (tex_psm.bpp == 16)
 			&& draw_sprite_tex && m_src->m_32_bits_fmt;
+
+		MY_LOGF("m_texture_shuffle = %d\n", m_texture_shuffle);
 
 		// Okami mustn't call this code
 		if (m_texture_shuffle && m_vertex.next < 3 && PRIM->FST && (m_context->FRAME.FBMSK == 0)) {
@@ -1341,7 +1345,6 @@ void GSRendererHW::Draw()
 		std::string s;
 
 		if (s_n >= s_saven) {
-			// Dump Register state
 			s = format("%05d_context.txt", s_n);
 
 			m_env.Dump(m_dump_root+s);

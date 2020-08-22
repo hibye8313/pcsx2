@@ -53,17 +53,19 @@ GSState::GSState()
 	m_clut_load_before_draw = theApp.GetConfigB("clut_load_before_draw");
 	if (theApp.GetConfigB("UserHacks"))
 	{
-		m_userhacks_auto_flush      = theApp.GetConfigB("UserHacks_AutoFlush");
-		m_userhacks_wildhack        = theApp.GetConfigB("UserHacks_WildHack");
-		m_userhacks_skipdraw        = theApp.GetConfigI("UserHacks_SkipDraw");
-		m_userhacks_skipdraw_offset = theApp.GetConfigI("UserHacks_SkipDraw_Offset");
+		m_userhacks_auto_flush           = theApp.GetConfigB("UserHacks_AutoFlush");
+		m_userhacks_wildhack             = theApp.GetConfigB("UserHacks_WildHack");
+		m_userhacks_skipdraw             = theApp.GetConfigI("UserHacks_SkipDraw");
+		m_userhacks_skipdraw_offset      = theApp.GetConfigI("UserHacks_SkipDraw_Offset");
+		m_userhacks_round_down_sprite_uv = theApp.GetConfigB("UserHacks_RoundDownSpriteUV");
 	}
 	else
 	{
-		m_userhacks_auto_flush      = false;
-		m_userhacks_wildhack        = false;
-		m_userhacks_skipdraw        = 0;
-		m_userhacks_skipdraw_offset = 0;
+		m_userhacks_auto_flush           = false;
+		m_userhacks_wildhack             = false;
+		m_userhacks_skipdraw             = 0;
+		m_userhacks_skipdraw_offset      = 0;
+		m_userhacks_round_down_sprite_uv = false;
 	}
 
 	s_n = 0;
@@ -862,7 +864,7 @@ void GSState::GIFRegHandlerXYZF2(const GIFReg* RESTRICT r)
 	m_v.XYZ.Z = r->XYZF.Z;
 	m_v.FOG.F = r->XYZF.F;
 */
-	
+
 /*
 	m_v.XYZ.u32[0] = r->XYZF.u32[0];
 	m_v.XYZ.u32[1] = r->XYZF.u32[1] & 0x00ffffff;
@@ -872,7 +874,7 @@ void GSState::GIFRegHandlerXYZF2(const GIFReg* RESTRICT r)
 	GSVector4i xyzf = GSVector4i::loadl(&r->XYZF);
 	GSVector4i xyz = xyzf & (GSVector4i::xffffffff().upl32(GSVector4i::x00ffffff()));
 	GSVector4i uvf = GSVector4i::load((int)m_v.UV).upl32(xyzf.srl32(24).srl<4>());
-	
+
 	m_v.m[1] = xyz.upl64(uvf);
 
 	VertexKick<prim, auto_flush>(adc);
@@ -949,7 +951,7 @@ template<int i> void GSState::ApplyTEX0(GIFRegTEX0& TEX0)
 			{
 				blocks >>= 1;
 			}
-		
+
 			for(int j = 0; j < blocks; j++, BITBLTBUF.SBP++)
 			{
 				InvalidateLocalMem(BITBLTBUF, r, true);
@@ -965,7 +967,7 @@ template<int i> void GSState::ApplyTEX0(GIFRegTEX0& TEX0)
 			r.top = m_env.TEXCLUT.COV;
 			r.right = r.left + GSLocalMemory::m_psm[TEX0.CPSM].pal;
 			r.bottom = r.top + 1;
-		
+
 			InvalidateLocalMem(BITBLTBUF, r, true);
 		}
 
@@ -987,8 +989,8 @@ template<int i> void GSState::GIFRegHandlerTEX0(const GIFReg* RESTRICT r)
 	if(PRIM->FST)
 	{
 		// Tokyo Xtreme Racer Drift 2, TW/TH == 0
-		// Just setting the max texture size to make the texture cache allocate some surface. 
-		// The vertex trace will narrow the updated area down to the minimum, upper-left 8x8 
+		// Just setting the max texture size to make the texture cache allocate some surface.
+		// The vertex trace will narrow the updated area down to the minimum, upper-left 8x8
 		// for a single letter, but it may address the whole thing if it wants to.
 
 		if(tw == 0) tw = 10;
@@ -997,7 +999,7 @@ template<int i> void GSState::GIFRegHandlerTEX0(const GIFReg* RESTRICT r)
 	else
 	{
 		// Yakuza, TW/TH == 0
-		// The minimap is drawn using solid colors, the texture is really a 1x1 white texel, 
+		// The minimap is drawn using solid colors, the texture is really a 1x1 white texel,
 		// modulated by the vertex color. Cannot change the dimension because S/T are normalized.
 	}
 
@@ -1100,7 +1102,7 @@ template<int i> void GSState::GIFRegHandlerTEX2(const GIFReg* RESTRICT r)
 	uint64 mask = 0xFFFFFFE003F00000ull; // TEX2 bits
 
 	GIFRegTEX0 TEX0;
-	
+
 	TEX0.u64 = (m_env.CTXT[i].TEX0.u64 & ~mask) | (r->u64 & mask);
 
 	ApplyTEX0<i>(TEX0);
@@ -1391,7 +1393,7 @@ template<int i> void GSState::GIFRegHandlerZBUF(const GIFReg* RESTRICT r)
 	{
 		// during startup all regs are cleared to 0 (by the bios or something), so we mask z until this register becomes valid
 		// edit: breaks Grandia Xtreme and sounds like a bad idea generally. What was the intend?
-		// edit2: should be set only before any serious drawing happens, grandia extreme nulls out this register throughout the whole game, 
+		// edit2: should be set only before any serious drawing happens, grandia extreme nulls out this register throughout the whole game,
 		//        I already forgot what it fixed, that game never masked the zbuffer, but assumed it was set by default
 		//ZBUF.ZMSK = 1;
 	}
@@ -1576,6 +1578,8 @@ void GSState::FlushWrite()
 
 void GSState::FlushPrim()
 {
+
+
 	if(m_index.tail > 0)
 	{
 		GL_REG("FlushPrim ctxt %d", PRIM->CTXT);
@@ -1653,6 +1657,152 @@ void GSState::FlushPrim()
 			m_vt.Update(m_vertex.buff, m_index.buff, m_vertex.tail, m_index.tail, GSUtil::GetPrimClass(PRIM->PRIM));
 
 			m_context->SaveReg();
+
+			if ((s_n >= s_saven) && (s_n <= s_saven + s_savel)) {
+				int prim = PRIM->PRIM;
+				switch (prim) {
+				case GS_POINTLIST:
+					MY_LOG("GS_POINTLIST\n");
+					for (int i = 0; i < m_index.tail; i++) {
+						GSVertex& vert0 = m_vertex.buff[i + 0];
+						MY_LOGF("X0 = %f, Y0 = %f, Z0 = %x, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), vert0.XYZ.Z, FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOG("\n");
+					}
+					break;
+				case GS_LINELIST:
+					MY_LOG("GS_LINELIST\n");
+					for (int i = 0; i < m_index.tail; i += 2) {
+						GSVertex& vert0 = m_vertex.buff[m_index.buff[i + 0]];
+						GSVertex& vert1 = m_vertex.buff[m_index.buff[i + 1]];
+						MY_LOGF("X0 = %f, Y0 = %f, Z0 = %x, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), vert0.XYZ.Z, FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOGF("X1 = %f, Y1 = %f, Z1 = %x, U1 = %f, V1 = %f, R1 = %x, G1 = %x, B1 = %x, A1 = %x\n", FIX_X(vert1.XYZ.X) , FIX_Y(vert1.XYZ.Y), vert1.XYZ.Z, FIX_UV(vert1.U) , FIX_UV(vert1.V), vert1.RGBAQ.R, vert1.RGBAQ.G, vert1.RGBAQ.B, vert1.RGBAQ.A);
+						MY_LOG("\n");
+					}
+					break;
+				case GS_LINESTRIP:			
+					MY_LOG("GS_LINESTRIP\n");
+					for (int i = 0; i < m_index.tail; i += 2) {
+						GSVertex& vert0 = m_vertex.buff[m_index.buff[i + 0]];
+						GSVertex& vert1 = m_vertex.buff[m_index.buff[i + 1]];
+						MY_LOGF("X0 = %f, Y0 = %f, Z0 = %x, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), vert0.XYZ.Z, FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOGF("X1 = %f, Y1 = %f, Z1 = %x, U1 = %f, V1 = %f, R1 = %x, G1 = %x, B1 = %x, A1 = %x\n", FIX_X(vert1.XYZ.X) , FIX_Y(vert1.XYZ.Y), vert1.XYZ.Z, FIX_UV(vert1.U) , FIX_UV(vert1.V), vert1.RGBAQ.R, vert1.RGBAQ.G, vert1.RGBAQ.B, vert1.RGBAQ.A);
+						MY_LOG("\n");
+					}			
+					break;
+				case GS_TRIANGLELIST:			
+					MY_LOG("GS_TRIANGLELIST\n");
+					for (int i = 0; i < m_index.tail; i += 3) {
+						GSVertex& vert0 = m_vertex.buff[m_index.buff[i + 0]];
+						GSVertex& vert1 = m_vertex.buff[m_index.buff[i + 1]];
+						GSVertex& vert2 = m_vertex.buff[m_index.buff[i + 2]];				
+						MY_LOGF("X0 = %f, Y0 = %f, Z0 = %x, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), vert0.XYZ.Z, FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOGF("X1 = %f, Y1 = %f, Z1 = %x, U1 = %f, V1 = %f, R1 = %x, G1 = %x, B1 = %x, A1 = %x\n", FIX_X(vert1.XYZ.X) , FIX_Y(vert1.XYZ.Y), vert1.XYZ.Z, FIX_UV(vert1.U) , FIX_UV(vert1.V), vert1.RGBAQ.R, vert1.RGBAQ.G, vert1.RGBAQ.B, vert1.RGBAQ.A);
+						MY_LOGF("X2 = %f, Y2 = %f, Z2 = %x, U2 = %f, V2 = %f, R2 = %x, G2 = %x, B2 = %x, A2 = %x\n", FIX_X(vert2.XYZ.X) , FIX_Y(vert2.XYZ.Y), vert2.XYZ.Z, FIX_UV(vert2.U) , FIX_UV(vert2.V), vert2.RGBAQ.R, vert2.RGBAQ.G, vert2.RGBAQ.B, vert2.RGBAQ.A);
+						MY_LOG("\n");
+					}			
+					break;
+				case GS_TRIANGLESTRIP:		   
+					MY_LOG("GS_TRIANGLESTRIP\n");
+					for (int i = 0; i < m_index.tail; i += 3) {
+						GSVertex& vert0 = m_vertex.buff[m_index.buff[i + 0]];
+						GSVertex& vert1 = m_vertex.buff[m_index.buff[i + 1]];
+						GSVertex& vert2 = m_vertex.buff[m_index.buff[i + 2]];				
+						MY_LOGF("X0 = %f, Y0 = %f, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOGF("X1 = %f, Y1 = %f, U1 = %f, V1 = %f, R1 = %x, G1 = %x, B1 = %x, A1 = %x\n", FIX_X(vert1.XYZ.X) , FIX_Y(vert1.XYZ.Y), FIX_UV(vert1.U) , FIX_UV(vert1.V), vert1.RGBAQ.R, vert1.RGBAQ.G, vert1.RGBAQ.B, vert1.RGBAQ.A);
+						MY_LOGF("X2 = %f, Y2 = %f, U2 = %f, V2 = %f, R2 = %x, G2 = %x, B2 = %x, A2 = %x\n", FIX_X(vert2.XYZ.X) , FIX_Y(vert2.XYZ.Y), FIX_UV(vert2.U) , FIX_UV(vert2.V), vert2.RGBAQ.R, vert2.RGBAQ.G, vert2.RGBAQ.B, vert2.RGBAQ.A);
+						MY_LOG("\n");
+					}			
+					break;
+				case GS_TRIANGLEFAN:			
+					MY_LOG("GS_TRIANGLEFAN\n");
+					for (int i = 0; i < m_index.tail; i += 3) {
+						GSVertex& vert0 = m_vertex.buff[m_index.buff[i + 0]];
+						GSVertex& vert1 = m_vertex.buff[m_index.buff[i + 1]];
+						GSVertex& vert2 = m_vertex.buff[m_index.buff[i + 2]];				
+						MY_LOGF("X0 = %f, Y0 = %f, Z0 = %x, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), vert0.XYZ.Z, FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOGF("X1 = %f, Y1 = %f, Z1 = %x, U1 = %f, V1 = %f, R1 = %x, G1 = %x, B1 = %x, A1 = %x\n", FIX_X(vert1.XYZ.X) , FIX_Y(vert1.XYZ.Y), vert1.XYZ.Z, FIX_UV(vert1.U) , FIX_UV(vert1.V), vert1.RGBAQ.R, vert1.RGBAQ.G, vert1.RGBAQ.B, vert1.RGBAQ.A);
+						MY_LOGF("X2 = %f, Y2 = %f, Z2 = %x, U2 = %f, V2 = %f, R2 = %x, G2 = %x, B2 = %x, A2 = %x\n", FIX_X(vert2.XYZ.X) , FIX_Y(vert2.XYZ.Y), vert2.XYZ.Z, FIX_UV(vert2.U) , FIX_UV(vert2.V), vert2.RGBAQ.R, vert2.RGBAQ.G, vert2.RGBAQ.B, vert2.RGBAQ.A);
+						MY_LOG("\n");
+					}			
+					break;
+				case GS_SPRITE:			
+					MY_LOG("GS_SPRITE\n");
+					for (int i = 0; i < m_index.tail; i += 2) {
+						GSVertex& vert0 = m_vertex.buff[m_index.buff[i + 0]];
+						GSVertex& vert1 = m_vertex.buff[m_index.buff[i + 1]];
+						MY_LOGF("X0 = %f, Y0 = %f, Z0 = %x, U0 = %f, V0 = %f, R0 = %x, G0 = %x, B0 = %x, A0 = %x\n", FIX_X(vert0.XYZ.X) , FIX_Y(vert0.XYZ.Y), vert0.XYZ.Z, FIX_UV(vert0.U) , FIX_UV(vert0.V), vert0.RGBAQ.R, vert0.RGBAQ.G, vert0.RGBAQ.B, vert0.RGBAQ.A);
+						MY_LOGF("X1 = %f, Y1 = %f, Z1 = %x, U1 = %f, V1 = %f, R1 = %x, G1 = %x, B1 = %x, A1 = %x\n", FIX_X(vert1.XYZ.X) , FIX_Y(vert1.XYZ.Y), vert1.XYZ.Z, FIX_UV(vert1.U) , FIX_UV(vert1.V), vert1.RGBAQ.R, vert1.RGBAQ.G, vert1.RGBAQ.B, vert1.RGBAQ.A);
+						MY_LOG("\n");
+					}			
+					break;
+				case GS_INVALID:
+					MY_LOG("GS_INVALID\n");
+					break;
+				}
+
+				if (s_n == 969 || s_n == 970 || s_n == 971 || s_n == 972) {
+					m_vertex.tail = 2;
+					m_vertex.head = 2;
+					m_vertex.next = 2;
+
+					memset(&m_vertex.buff[0], 0, sizeof(m_vertex.buff[0]));
+					m_vertex.buff[0].XYZ.X = (m_context->XYOFFSET.OFX - 8);
+					m_vertex.buff[0].XYZ.Y = (m_context->XYOFFSET.OFY - 8);
+					m_vertex.buff[0].XYZ.Z = 0xffff;
+					m_vertex.buff[0].RGBAQ.R = 0x80;
+					m_vertex.buff[0].RGBAQ.G = 0x80;
+					m_vertex.buff[0].RGBAQ.B = 0x80;
+					m_vertex.buff[0].RGBAQ.A = 0x80;
+					m_vertex.buff[0].U = 0;
+					m_vertex.buff[0].V = 0;
+					memset(&m_vertex.buff[1], 0, sizeof(m_vertex.buff[1]));
+					m_vertex.buff[1].XYZ.X = (m_context->XYOFFSET.OFX + 512 * 16 - 8);
+					m_vertex.buff[1].XYZ.Y = (m_context->XYOFFSET.OFY + 448 * 16 - 8);
+					m_vertex.buff[1].XYZ.Z = 0xffff;
+					m_vertex.buff[1].RGBAQ.R = 0x80;
+					m_vertex.buff[1].RGBAQ.G = 0x80;
+					m_vertex.buff[1].RGBAQ.B = 0x80;
+					m_vertex.buff[1].RGBAQ.A = 0x80;
+					m_vertex.buff[1].U = 512 * 16;
+					m_vertex.buff[1].V = 448 * 16;
+
+					m_index.tail = 2;
+					m_index.buff[0] = 0;
+					m_index.buff[1] = 1;
+				}
+
+				if ((s_n % 10) == 0) {
+					printf("draw: %d\n", s_n);
+				}
+
+				// for (int i = 0; i < m_vertex.tail; i += 8) {
+				// 	for (int j = 0; j < m_vertex.tail; j += 8) {
+				// 		GSVertex& vert0 = m_vertex.buff[j + 0];
+				// 		GSVertex& vert1 = m_vertex.buff[j + 1];
+				// 		MY_LOGF("X0 = %f, Y0 = %f, U0 = %f, V0 = %f\n", FIX_X(vert0.XYZ.X + 8) , FIX_Y(vert0.XYZ.Y + 8), FIX_UV(vert0.U) , FIX_UV(vert0.V));
+				// 		MY_LOGF("X1 = %f, Y1 = %f, U1 = %f, V1 = %f\n", FIX_X(vert1.XYZ.X + 8) , FIX_Y(vert1.XYZ.Y + 8), FIX_UV(vert1.U) , FIX_UV(vert1.V));
+				// 		MY_LOG("\n");
+
+				// 		GSVertex& vert2 = m_vertex.buff[j + 2];
+				// 		GSVertex& vert3 = m_vertex.buff[j + 3];
+				// 		MY_LOGF("X0 = %f, Y0 = %f, U0 = %f, V0 = %f\n", FIX_X(vert2.XYZ.X + 8) , FIX_Y(vert2.XYZ.Y + 8), FIX_UV(vert2.U) , FIX_UV(vert2.V));
+				// 		MY_LOGF("X1 = %f, Y1 = %f, U1 = %f, V1 = %f\n", FIX_X(vert3.XYZ.X + 8) , FIX_Y(vert3.XYZ.Y + 8), FIX_UV(vert3.U) , FIX_UV(vert3.V));
+				// 		MY_LOG("\n");
+
+				// 		GSVertex& vert4 = m_vertex.buff[j + 4];
+				// 		GSVertex& vert5 = m_vertex.buff[j + 5];
+				// 		MY_LOGF("X0 = %f, Y0 = %f, U0 = %f, V0 = %f\n", FIX_X(vert4.XYZ.X + 8) , FIX_Y(vert4.XYZ.Y + 8), FIX_UV(vert4.U) , FIX_UV(vert4.V));
+				// 		MY_LOGF("X1 = %f, Y1 = %f, U1 = %f, V1 = %f\n", FIX_X(vert5.XYZ.X + 8) , FIX_Y(vert5.XYZ.Y + 8), FIX_UV(vert5.U) , FIX_UV(vert5.V));
+				// 		MY_LOG("\n");
+
+				// 		GSVertex& vert6 = m_vertex.buff[j + 6];
+				// 		GSVertex& vert7 = m_vertex.buff[j + 7];
+				// 		MY_LOGF("X0 = %f, Y0 = %f, U0 = %f, V0 = %f\n", FIX_X(vert6.XYZ.X + 8) , FIX_Y(vert6.XYZ.Y + 8), FIX_UV(vert6.U) , FIX_UV(vert6.V));
+				// 		MY_LOGF("X1 = %f, Y1 = %f, U1 = %f, V1 = %f\n", FIX_X(vert7.XYZ.X + 8) , FIX_Y(vert7.XYZ.Y + 8), FIX_UV(vert7.U) , FIX_UV(vert7.V));
+				// 		MY_LOG("\n");
+				// 	}
+				// }
+			}			
 
 			try {
 				Draw();
@@ -2196,7 +2346,7 @@ template<int index> void GSState::Transfer(const uint8* mem, uint32 size)
 						while(--total > 0);
 
 						break;
-					
+
 					case GIFPath::TYPE_STQRGBAXYZF2: // majority of the vertices are formatted like this
 
 						(this->*m_fpGIFPackedRegHandlersC[GIF_REG_STQRGBAXYZF2])((GIFPackedReg*)mem, total);
@@ -2257,7 +2407,7 @@ template<int index> void GSState::Transfer(const uint8* mem, uint32 size)
 
 			case GIF_FLG_IMAGE2: // hmmm // Fall through here fixes a crash in Wallace and Gromit Project Zoo
 				// and according to Pseudonym we shouldn't even land in this code. So hmm indeed. (rama)
-				
+
 				/*ASSERT(0);
 
 				path.nloop = 0;
@@ -2638,7 +2788,7 @@ void GSState::GrowVertexBuffer()
 	if(m_index.buff != NULL)
 	{
 		memcpy(index, m_index.buff, sizeof(uint32) * m_index.tail);
-		
+
 		_aligned_free(m_index.buff);
 	}
 
@@ -2660,7 +2810,7 @@ __forceinline void GSState::VertexKick(uint32 skip)
 	// callers should write XYZUVF to m_v.m[1] in one piece to have this load store-forwarded, either by the cpu or the compiler when this function is inlined
 
 	GSVector4i v0(m_v.m[0]);
-	GSVector4i v1(m_v.m[1]); 
+	GSVector4i v1(m_v.m[1]);
 
 	GSVector4i* RESTRICT tailptr = (GSVector4i*)&m_vertex.buff[tail];
 
@@ -2735,8 +2885,8 @@ __forceinline void GSState::VertexKick(uint32 skip)
 			break;
 		}
 
-		GSVector4i test = pmax.lt16(m_scissor) | pmin.gt16(m_scissor.zwzwl()); 
-		
+		GSVector4i test = pmax.lt16(m_scissor) | pmin.gt16(m_scissor.zwzwl());
+
 		switch(prim)
 		{
 		case GS_TRIANGLELIST:
@@ -2762,7 +2912,7 @@ __forceinline void GSState::VertexKick(uint32 skip)
 			cross = cross * cross.wzwz(); // x20 * y21, y20 * x21
 			test |= GSVector4i::cast(cross == cross.yxwz());
 			*/
-			test = (test | v0 == v1) | (v1 == v2 | v0 == v2); 
+			test = (test | v0 == v1) | (v1 == v2 | v0 == v2);
 			break;
 		case GS_TRIANGLEFAN:
 			/*
@@ -2770,12 +2920,12 @@ __forceinline void GSState::VertexKick(uint32 skip)
 			cross = cross * cross.wzwz(); // x23 * y21, y23 * x21
 			test |= GSVector4i::cast(cross == cross.yxwz());
 			*/
-			test = (test | v3 == v1) | (v1 == v2 | v3 == v2); 
+			test = (test | v3 == v1) | (v1 == v2 | v3 == v2);
 			break;
 		default:
 			break;
 		}
-		
+
 		skip |= test.mask() & 15;
 	}
 
@@ -2787,7 +2937,7 @@ __forceinline void GSState::VertexKick(uint32 skip)
 		case GS_LINELIST:
 		case GS_TRIANGLELIST:
 		case GS_SPRITE:
-		case GS_INVALID: 
+		case GS_INVALID:
 			m_vertex.tail = head; // no need to check or grow the buffer length
 			break;
 		case GS_LINESTRIP:
@@ -2797,7 +2947,7 @@ __forceinline void GSState::VertexKick(uint32 skip)
 		case GS_TRIANGLEFAN:
 			if(tail >= m_vertex.maxcount) GrowVertexBuffer(); // in case too many vertices were skipped
 			break;
-		default: 
+		default:
 			__assume(0);
 		}
 
@@ -2824,11 +2974,11 @@ __forceinline void GSState::VertexKick(uint32 skip)
 		m_index.tail += 2;
 		break;
 	case GS_LINESTRIP:
-		if(next < head) 
+		if(next < head)
 		{
 			m_vertex.buff[next + 0] = m_vertex.buff[head + 0];
 			m_vertex.buff[next + 1] = m_vertex.buff[head + 1];
-			head = next; 
+			head = next;
 			m_vertex.tail = next + 2;
 		}
 		buff[0] = head + 0;
@@ -2846,12 +2996,12 @@ __forceinline void GSState::VertexKick(uint32 skip)
 		m_index.tail += 3;
 		break;
 	case GS_TRIANGLESTRIP:
-		if(next < head) 
+		if(next < head)
 		{
 			m_vertex.buff[next + 0] = m_vertex.buff[head + 0];
 			m_vertex.buff[next + 1] = m_vertex.buff[head + 1];
 			m_vertex.buff[next + 2] = m_vertex.buff[head + 2];
-			head = next; 
+			head = next;
 			m_vertex.tail = next + 3;
 		}
 		buff[0] = head + 0;
@@ -2869,7 +3019,7 @@ __forceinline void GSState::VertexKick(uint32 skip)
 		m_vertex.next = tail;
 		m_index.tail += 3;
 		break;
-	case GS_SPRITE:	
+	case GS_SPRITE:
 		buff[0] = head + 0;
 		buff[1] = head + 1;
 		m_vertex.head = head + 2;
@@ -3036,9 +3186,9 @@ void GSState::GetTextureMinMax(GSVector4i& r, const GIFRegTEX0& TEX0, const GIFR
 
 	if(vr.rempty())
 	{
-		// NOTE: this can happen when texcoords are all outside the texture or clamping area is zero, but we can't 
+		// NOTE: this can happen when texcoords are all outside the texture or clamping area is zero, but we can't
 		// let the texture cache update nothing, the sampler will still need a single texel from the border somewhere
-		// examples: 
+		// examples:
 		// - THPS (no visible problems)
 		// - NFSMW (strange rectangles on screen, might be unrelated)
 		// - Lupin 3rd (huge problems, textures sizes seem to be randomly specified)
@@ -3324,6 +3474,57 @@ GIFRegTEX0 GSState::GetTex0Layer(uint32 lod)
 	}
 
 	return TEX0;
+}
+
+
+// Based loosely on the GSRendererHW::RoundSpriteOffset function, but simplified
+// This is meant to fix issues with sprite rendering on the game Cho Aniki: Seinaru Protein Densetsu
+// The basic issue is that the game renders sprites whose right-most pixels get UV coordinates
+// that are exactly on a texel boundary. It seems that graphics backends (OpenGL and DX11) round
+// UV coordinates up (to the right or bottom) which causes the sprite to pickup texels its not
+// supposed to. The rounding behavior of UV coordinates on the actual GS is currently unknown to me.
+// This has currently not been tested on other games so it will be considered a "hack".
+void GSState::RoundDownSpriteUV_Hack() {
+	size_t count = m_vertex.next;
+	// Go through each sprite in buffer; every 2 verts is a sprite.
+	for(size_t i = 0; i < count; i += 2) {
+		GSVertex& vert0 = m_vertex.buff[i];
+		GSVertex& vert1 = m_vertex.buff[i + 1];
+
+	    // Use int64 here to prevent precision issues in integer arithmetic
+		// TODO: Maybe the X, U, and Y, U code can be folded into one use SSE?
+		{
+			const int64 X0 = vert0.XYZ.X;
+			const int64 X1 = vert1.XYZ.X;
+			const int64 X  = (X1 - 1) & ~0xF; // X value of the right-most rasterized pixels.
+										      // Subtract 1 to exclude X1 if it is on a pixel center (as per GS rasterization rules)
+
+			if ((X1 > X0) && (X >= X0)) { // Need this check in case the sprite covers no pixels
+				const int64 U0 = vert0.U;
+				const int64 U1 = vert1.U;
+				const int64 U = ((X1 - X) * U0 + (X - X0) * U1) / (X1 - X0); // U value of the right-most rasterized pixel.
+				if ((U & 0xF) == 0) { // Fractional part (lower 4 bits) == 0 means we lie on a texel boundary.
+					vert1.U--;     // Subtract 1/16 texel so that we do not select the texel to the right
+				}
+			}
+		}
+
+		{
+			const int64 Y0 = vert0.XYZ.Y;
+			const int64 Y1 = vert1.XYZ.Y;
+			const int64 Y  = (Y1 - 1) & ~0xF; // Y value of the bottom-most rasterized pixels.
+										      // Subtract 1 to exclude Y1 if it is on a pixel center (as per GS rasterization rules)
+
+			if ((Y1 > Y0) && (Y >= Y0)) { // Need this check in case the sprite covers no pixels
+				int64 V0 = vert0.V;
+				int64 V1 = vert1.V;
+				int64 V = ((Y1 - Y) * V0 + (Y - Y0) * V1) / (Y1 - Y0); // V value of the bottom-most rasterized pixel.
+				if ((V & 0xF) == 0) { // Fractional part (lower 4 bits) == 0 means we lie on a texel boundary.
+					vert1.V--; // Subtract 1/16 texel so that we do not select the texel to the bottom
+				}
+			}
+		}
+	}
 }
 
 // GSTransferBuffer
